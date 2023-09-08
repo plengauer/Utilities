@@ -1,0 +1,52 @@
+name: Publish Auto Management
+
+on:
+  push:
+    branches: main
+    paths:
+      - 'auto_management/**'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./auto_management/
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt-get install devscripts debhelper
+      - run: dpkg-buildpackage -us -uc
+      - uses: actions/upload-artifact@v2
+        with:
+          name: auto_management.deb
+          path: *.deb
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: auto_management.deb
+
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - uses: actions/upload-release-asset@v1
+        id: upload-release-asset 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: auto_management.deb
+          asset_name: auto_management.deb
+          asset_content_type: application/octet-stream
