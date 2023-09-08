@@ -20,7 +20,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: auto_management.deb
-          path: *.deb
+          path: auto_management.deb
 
   release:
     needs: build
