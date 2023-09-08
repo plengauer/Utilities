@@ -7,37 +7,24 @@ on:
       - 'auto_management/**'
       
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+      - run: echo "::set-output name=version::$(cat ./auto_management/DEBIAN/control | grep 'Version' | awk -F\  '{print $2}')"
+        id: version
       - run: sudo apt-get install devscripts debhelper
       - run: dpkg-deb --build ./auto_management/
-      - uses: actions/upload-artifact@v2
-        with:
-          name: auto_management.deb
-          path: auto_management.deb
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: auto_management.deb
-
       - uses: actions/create-release@v1
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_RELEASE_TOKEN }}
         with:
-          tag_name: Tag ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: Release Auto Management v${{ steps.version.outputs.version }}
           draft: false
           prerelease: false
-
       - uses: actions/upload-release-asset@v1
         id: upload-release-asset 
         env:
