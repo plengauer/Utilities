@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+if [ -f /sys/hypervisor/uuid ] && [ cat /sys/hypervisor/uuid == *ec2* ]; then
+  wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
+  dpkg -i -E ./amazon-cloudwatch-agent.deb
+  /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+  rm amazon-cloudwatch-agent.deb
+fi
