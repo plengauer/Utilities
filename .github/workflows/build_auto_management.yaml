@@ -16,7 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: sudo apt-get install devscripts debhelper
-      - run: dpkg-buildpackage -us -uc
+#       - run: dpkg-buildpackage -us -uc
+      - run: dpkg-deb --build .
       - uses: actions/upload-artifact@v2
         with:
           name: auto_management.deb
