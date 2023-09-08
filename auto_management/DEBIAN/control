@@ -1,7 +1,7 @@
 Package: auto-management
 Version: 0.1
 Architecture: all
-Depends: bash wget
+Depends: bash, wget
 Priority: extra
 Maintainer: Philipp Lengauer <p.lengauer@gmail.com>
 Homepage: https://github.com/plengauer/Scripts
