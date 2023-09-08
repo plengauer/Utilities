@@ -5,4 +5,4 @@ Depends: bash, wget
 Priority: extra
 Maintainer: Philipp Lengauer <p.lengauer@gmail.com>
 Homepage: https://github.com/plengauer/Scripts
-Description: some default stuff on new machines 
+Description: some default stuff on new machines
