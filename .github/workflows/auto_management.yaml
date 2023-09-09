@@ -15,7 +15,7 @@ jobs:
       - run: echo "::set-output name=version::$(cat ./auto_management/DEBIAN/control | grep 'Version' | awk -F\  '{print $2}')"
         id: version
       - run: sudo apt-get install devscripts debhelper
-      - run: dpkg-deb --build ./auto_management/
+      - run: dpkg-deb --root-owner-group --build ./auto_management/
       - uses: actions/create-release@v1
         id: create_release
         env:
