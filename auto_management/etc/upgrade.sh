@@ -13,3 +13,5 @@ if [ -f /var/run/reboot-required ]
 then
     shutdown -r +15
 fi
+
+exit 0
