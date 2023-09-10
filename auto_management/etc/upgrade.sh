@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-apt-get update
+apt-get update --allow-insecure-repositories
 apt-get -y dist-upgrade
 apt-get -y autoremove
 apt-get -y autoclean
