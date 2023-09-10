@@ -1,5 +1,5 @@
 Package: auto-management
-Version: 1.1.1
+Version: 1.1.2
 Architecture: all
 Depends: bash, wget
 Priority: extra
