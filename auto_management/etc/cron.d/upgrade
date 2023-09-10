@@ -1,1 +1,1 @@
-0 0 * * * root /bin/bash /etc/upgrade.sh
+0 0 * * * root /bin/bash /usr/bin/upgrade.sh
