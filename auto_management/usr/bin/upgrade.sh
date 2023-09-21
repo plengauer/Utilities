@@ -7,7 +7,7 @@ apt-get -y autoremove
 apt-get -y autoclean
 dpkg --configure -a
 
-do-release-upgrade -f DistUpgradeViewNonInteractive
+do-release-upgrade -f DistUpgradeViewNonInteractive || true
 
 if [ -f /var/run/reboot-required ]
 then
