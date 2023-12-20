@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+killall -9 apt-get &> /dev/null || true
+killall -9 dpkg &> /dev/null || true
+
 ((apt-get update --allow-insecure-repositories && apt-get -y dist-upgrade --allow-unauthenticated && apt-get -y autoremove && apt-get -y autoclean) || dpkg --configure -a) && (do-release-upgrade -f DistUpgradeViewNonInteractive || true)
 
 if [ -f /var/run/reboot-required ]; then
