@@ -5,7 +5,7 @@ killall -9 apt-get &> /dev/null || true
 killall -9 dpkg &> /dev/null || true
 
 (apt-get update --allow-insecure-repositories && apt-get -y dist-upgrade --allow-unauthenticated && apt-get -y autoremove && apt-get -y autoclean && (do-release-upgrade -f DistUpgradeViewNonInteractive || true)) \
-  || dpkg --configure -a
+  || dpkg --configure -a \
   || apt-get -y --allow-unauthenticated --fix-broken install
 
 if [ -f /var/run/reboot-required ]; then
