@@ -4,6 +4,9 @@ set -e
 killall -9 apt-get &> /dev/null || true
 killall -9 dpkg &> /dev/null || true
 
+sed -i '/Prompt/d' /etc/update-manager/release-upgrades
+echo "Prompt=normal" >> /etc/update-manager/release-upgrades
+
 (apt-get update --allow-insecure-repositories && apt-get -y dist-upgrade --allow-unauthenticated && apt-get -y autoremove && apt-get -y autoclean && (RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive || true)) \
   || dpkg --configure -a \
   || apt-get -y --allow-unauthenticated --fix-broken install
