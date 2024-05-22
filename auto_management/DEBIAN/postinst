@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-sed -i '/Prompt/d' /etc/update-manager/release-upgrades
-echo "Prompt=normal" >> /etc/update-manager/release-upgrades
-
 if [ -f /sys/hypervisor/uuid ] && [ $(cat /sys/hypervisor/uuid) == *ec2* ]; then
   wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
   dpkg -i -E ./amazon-cloudwatch-agent.deb
