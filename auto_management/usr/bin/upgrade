@@ -1,32 +1,33 @@
 #!/bin/bash
-set -e
 
 killall -9 apt-get &> /dev/null || true
 killall -9 dpkg &> /dev/null || true
 
-dist_upgrade() {
-  apt-get update --allow-insecure-repositories && \
-  apt-get -y dist-upgrade --allow-unauthenticated && \
+clean() {
   apt-get -y autoremove && apt-get -y autoclean
-}
-
-release_upgrade() {
-  sed -i 's/Prompt=lts/Prompt=normal/g' /etc/update-manager/release-upgrades && \
-  RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive && \
-  sed -i 's/Enabled: no/Enabled: yes/g' /etc/apt/sources.list.d/*.sources && \
-  dist_upgrade
 }
 
 repair() {
   dpkg --configure -a || apt-get -y --allow-unauthenticated --fix-broken install
 }
 
-maybe_reboot() {
-  [ -f /var/run/reboot-required ] && shutdown -r +15 || true
+dist_upgrade() {
+  apt-get update --allow-insecure-repositories && apt-get -y dist-upgrade --allow-unauthenticated && clean || repair
 }
 
-(dist_upgrade && (release_upgrade || true)) || repair
+release_upgrade() {
+  if ! do-release-upgrade -c; then return 1; fi 
+  sed -i 's/Prompt=lts/Prompt=normal/g' /etc/update-manager/release-upgrades
+  RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive || repair
+  sed -i 's/Enabled: no/Enabled: yes/g' /etc/apt/sources.list.d/*.sources
+  ls /etc/apt/sources.list.d/*.distUpgrade | rev | cut -d . -f 2- | rev | while read -r file; do if [ -f "$file" ]; then rm "$file".distUpgrade; else mv "$file".distUpgrade "$file"; fi; done
+  clean
+}
 
+maybe_reboot() {
+  [ -f /var/run/reboot-required ] && shutdown -r +15
+}
+
+dist_upgrade && release_upgrade
 maybe_reboot
-
 true
