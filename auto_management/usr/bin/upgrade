@@ -4,15 +4,29 @@ set -e
 killall -9 apt-get &> /dev/null || true
 killall -9 dpkg &> /dev/null || true
 
-sed -i '/Prompt/d' /etc/update-manager/release-upgrades
-echo "Prompt=normal" >> /etc/update-manager/release-upgrades
+dist_upgrade() {
+  apt-get update --allow-insecure-repositories && \
+  apt-get -y dist-upgrade --allow-unauthenticated && \
+  apt-get -y autoremove && apt-get -y autoclean
+}
 
-(apt-get update --allow-insecure-repositories && apt-get -y dist-upgrade --allow-unauthenticated && apt-get -y autoremove && apt-get -y autoclean && (RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive || true)) \
-  || dpkg --configure -a \
-  || apt-get -y --allow-unauthenticated --fix-broken install
+release_upgrade() {
+  sed -i 's/Prompt=lts/Prompt=normal/g' /etc/update-manager/release-upgrades && \
+  RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive && \
+  sed -i 's/Enabled: no/Enabled: yes/g' /etc/apt/sources.list.d/*.sources && \
+  dist_upgrade
+}
 
-if [ -f /var/run/reboot-required ]; then
-    shutdown -r +15
-fi
+repair() {
+  dpkg --configure -a || apt-get -y --allow-unauthenticated --fix-broken install
+}
+
+maybe_reboot() {
+  [ -f /var/run/reboot-required ] && shutdown -r +15 || true
+}
+
+(dist_upgrade && (release_upgrade || true)) || repair
+
+maybe_reboot
 
 true
