@@ -16,8 +16,8 @@ dist_upgrade() {
 }
 
 release_upgrade() {
-  if ! do-release-upgrade -c; then return 1; fi 
   sed -i 's/Prompt=lts/Prompt=normal/g' /etc/update-manager/release-upgrades
+  if ! do-release-upgrade -c; then return 1; fi 
   RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive || repair
   sed -i 's/Enabled: no/Enabled: yes/g' /etc/apt/sources.list.d/*.sources
   ls /etc/apt/sources.list.d/*.distUpgrade | rev | cut -d . -f 2- | rev | while read -r file; do if [ -f "$file" ]; then rm "$file".distUpgrade; else mv "$file".distUpgrade "$file"; fi; done
