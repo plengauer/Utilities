@@ -8,5 +8,5 @@
   "prConcurrentLimit": 0,
   "automerge": true,
   "automergeType": "pr",
-  "ignoreTests": true,
+  "ignoreTests": true
 }
