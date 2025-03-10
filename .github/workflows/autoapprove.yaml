@@ -1,3 +1,5 @@
+Name: Autoapprove
+
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -10,6 +12,12 @@ jobs:
   approve:
     runs-on: ubuntu-latest
     steps:
+      - uses: plengauer/opentelemetry-bash/actions/instrument/job@v5.7.5
+        with:
+          secrets_to_redact: '${{ toJSON(secrets) }}'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: |
           curl --no-progress-meter -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls?per_page=100 \
             | jq '.[] | select(.state == "open") | select(.user.login == "actions-bot-pl") | .number' \
