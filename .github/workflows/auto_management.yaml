@@ -16,7 +16,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: echo "::set-output name=version::$(cat ./auto_management/DEBIAN/control | grep 'Version' | awk -F\  '{print $2}')"
         id: version
       - run: sudo apt-get install devscripts debhelper
