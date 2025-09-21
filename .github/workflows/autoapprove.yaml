@@ -1,4 +1,4 @@
-Name: Autoapprove
+name: Autoapprove
 
 on:
   schedule:
