@@ -10,9 +10,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-bash/actions/instrument/job@v5.27.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.27.0
         with:
-          secrets_to_redact: '${{ toJSON(secrets) }}'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -39,3 +39,5 @@ jobs:
           asset_path: auto_management.deb
           asset_name: auto_management_${{ steps.version.outputs.version }}.deb
           asset_content_type: application/octet-stream
+    permissions:
+      actions: read
