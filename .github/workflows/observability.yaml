@@ -2,7 +2,7 @@ name: OpenTelemetry
 
 on:
   workflow_run:
-    workflows: [Publish Auto Management, Autoapprove, Autorerun, Autoversion, Renovate, Running Copilot]
+    workflows: [Publish Auto Management, Autoapprove, Autorerun, Autoversion, Renovate, Copilot coding agent]
     types:
       - completed
 
