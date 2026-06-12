@@ -16,6 +16,10 @@ jobs:
   bump:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515
         env:
@@ -30,5 +34,3 @@ jobs:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           increments: ${{ github.ref_name == 'main' && 'major;minor' || 'patch' }}
-    permissions:
-      actions: read
